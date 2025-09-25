@@ -6,21 +6,21 @@ module.exports = defineConfig({
   testMatch: ['**/*.spec.js', '**/*.test.js'],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: 1,
+  retries: process.env.CI ? 1 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
-
-  timeout: 60000, // 60s per test
+  timeout: 60000,
 
   use: {
-    actionTimeout: 10000,      // per click/fill/etc.
-    navigationTimeout: 15000,  // per page.goto()
+    headless: true,             // ✅ force headless for CI
+    actionTimeout: 10000,
+    navigationTimeout: 15000,
     expect: { timeout: 10000 },
-    video: 'on',
+    video: process.env.CI ? 'on' : 'off',       // record video only on CI
     trace: 'on-first-retry',
-    headless: false,           // 👀 show the browser
     launchOptions: {
-      slowMo: 3000             // 🐢 3s pause after each action
+      // slowMo only for local debugging
+      slowMo: process.env.CI ? 0 : 3000
     }
   },
 
